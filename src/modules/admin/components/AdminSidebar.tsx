@@ -12,6 +12,7 @@ import {
   BarChart3,
   Settings,
   LogOut,
+  Truck,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 
@@ -19,6 +20,7 @@ const menuItems = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/products', label: 'Products', icon: Package },
   { href: '/admin/orders', label: 'Orders', icon: ShoppingBag },
+  // { href: '/admin/shipments', label: 'Shipments', icon: Truck },
   { href: '/admin/users', label: 'Users', icon: Users },
   { href: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
   { href: '/admin/settings', label: 'Settings', icon: Settings },

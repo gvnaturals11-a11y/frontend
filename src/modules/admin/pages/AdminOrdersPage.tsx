@@ -95,6 +95,7 @@ export default function AdminOrdersPage() {
                   <th className="text-left p-4 font-semibold text-gray-700 dark:text-gray-300">Phone</th>
                   <th className="text-left p-4 font-semibold text-gray-700 dark:text-gray-300">Date</th>
                   <th className="text-left p-4 font-semibold text-gray-700 dark:text-gray-300">Amount</th>
+                  <th className="text-left p-4 font-semibold text-gray-700 dark:text-gray-300">Payment</th>
                   <th className="text-left p-4 font-semibold text-gray-700 dark:text-gray-300">Status</th>
                   <th className="text-left p-4 font-semibold text-gray-700 dark:text-gray-300">Actions</th>
                 </tr>
@@ -135,6 +136,19 @@ export default function AdminOrdersPage() {
                       <td className="p-4">
                         <div className="font-semibold text-gray-900 dark:text-gray-100">
                           ₹{order.subtotal?.toFixed(2) || '0.00'}
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="text-sm">
+                          {order.payment_method === 'COD' ? (
+                            <span className="px-2 py-1 bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200 rounded text-xs font-medium">
+                              COD
+                            </span>
+                          ) : (
+                            <span className="px-2 py-1 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded text-xs font-medium">
+                              Prepaid
+                            </span>
+                          )}
                         </div>
                       </td>
                       <td className="p-4">

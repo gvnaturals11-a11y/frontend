@@ -115,6 +115,18 @@ export default function AdminOrderDetailPage() {
                     : 'N/A'}
                 </span>
               </div>
+              {order.payment_method && (
+                <div className="flex justify-between">
+                  <span className="text-gray-600 dark:text-gray-400">Payment Method</span>
+                  <span className="font-semibold">
+                    {order.payment_method === 'COD' ? (
+                      <span className="text-orange-600 dark:text-orange-400">Cash on Delivery</span>
+                    ) : (
+                      <span className="text-green-600 dark:text-green-400">Prepaid</span>
+                    )}
+                  </span>
+                </div>
+              )}
               <div className="flex justify-between text-lg font-bold pt-4 border-t">
                 <span>Total Amount</span>
                 <span>₹{order.subtotal.toFixed(2)}</span>

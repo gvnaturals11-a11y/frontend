@@ -6,7 +6,7 @@ import { useCartStore } from '@/store/cart.store'
 import { useAuthStore } from '@/store/auth.store'
 import { ShippingForm } from '../components/ShippingForm'
 import { Card } from '@/components/ui/Card'
-import { ShippingAddress, CreateOrderRequest } from '@/types/order.types'
+import { ShippingAddress, CreateOrderRequest, PaymentMethod } from '@/types/order.types'
 import { ordersApi } from '@/lib/api/orders.api'
 import { useMutation } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
@@ -53,6 +53,7 @@ export default function CheckoutPage() {
         quantity_kg: item.quantity_kg,
       })),
       shipping_address: shippingAddress,
+      payment_method: 'COD', // Cash on Delivery
     }
 
     createOrderMutation.mutate(orderData)
@@ -108,6 +109,16 @@ export default function CheckoutPage() {
               <div className="border-t pt-2 flex justify-between text-lg font-bold">
                 <span>Total</span>
                 <span>₹{total.toFixed(2)}</span>
+              </div>
+              <div className="pt-2 mt-2 border-t">
+                <div className="bg-coffee-50 dark:bg-coffee-900/20 p-3 rounded-lg">
+                  <p className="text-sm font-medium text-coffee-900 dark:text-coffee-100">
+                    Payment Method: Cash on Delivery (COD)
+                  </p>
+                  <p className="text-xs text-coffee-600 dark:text-coffee-400 mt-1">
+                    Pay when you receive your order
+                  </p>
+                </div>
               </div>
             </div>
           </Card>

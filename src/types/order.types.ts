@@ -28,9 +28,12 @@ export interface ShippingAddress {
   country: string
 }
 
+export type PaymentMethod = 'COD' | 'PREPAID'
+
 export interface CreateOrderRequest {
   items: CreateOrderItem[]
   shipping_address: ShippingAddress
+  payment_method?: PaymentMethod
 }
 
 export type OrderStatus = 'CREATED' | 'PAID' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED'
@@ -40,6 +43,7 @@ export interface Order {
   order_number: string
   user_id: string
   status: OrderStatus
+  payment_method?: PaymentMethod
   subtotal: number
   shipping_address: ShippingAddress
   items?: OrderItem[]

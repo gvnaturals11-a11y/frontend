@@ -21,6 +21,17 @@ const statusColors: Record<OrderStatus, string> = {
   CANCELLED: 'bg-red-100 text-red-800',
 }
 
+const getStatusLabel = (status: OrderStatus): string => {
+  const labels: Record<OrderStatus, string> = {
+    CREATED: 'ORDERED',
+    PAID: 'PAID',
+    SHIPPED: 'SHIPPED',
+    DELIVERED: 'DELIVERED',
+    CANCELLED: 'CANCELLED',
+  }
+  return labels[status] || status
+}
+
 export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
   const statusColor = statusColors[order.status as OrderStatus] || statusColors.CREATED
 
@@ -51,11 +62,22 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
               </div>
             </div>
 
-            <div className="flex items-center gap-4 mb-3">
+            <div className="flex items-center gap-4 mb-3 flex-wrap">
               <span className={cn('px-3 py-1 rounded-full text-xs font-medium', statusColor)}>
-                {order.status}
+                {getStatusLabel(order.status as OrderStatus)}
               </span>
               <span className="text-lg font-bold text-coffee-900">₹{order.subtotal.toFixed(2)}</span>
+              {order.payment_method === 'COD' && (
+                <span className="text-xs text-coffee-600 bg-coffee-50 dark:bg-coffee-900/20 px-2 py-1 rounded">
+                  COD
+                </span>
+              )}
+              {(order.status === 'SHIPPED' || order.status === 'DELIVERED') && (
+                <span className="text-xs text-coffee-600 flex items-center gap-1">
+                  <Package className="w-3 h-3" />
+                  Track Shipment
+                </span>
+              )}
             </div>
 
             {order.shipping_address && (
