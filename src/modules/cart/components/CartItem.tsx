@@ -46,24 +46,21 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
 
             <div className="flex items-center justify-between mt-4">
               <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleQuantityChange(-1)}
+                <select
+                  value={item.quantity_kg}
+                  onChange={(e) => updateQuantity(item.product._id, Number(e.target.value))}
+                  className="p-1 border border-gray-300 rounded-md text-sm font-medium focus:ring-primary focus:border-primary"
                 >
-                  <Minus className="w-4 h-4" />
-                </Button>
-                <span className="w-12 text-center font-semibold">
-                  {item.quantity_kg}kg
-                </span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleQuantityChange(1)}
-                  disabled={item.quantity_kg >= item.product.stock_kg}
-                >
-                  <Plus className="w-4 h-4" />
-                </Button>
+                  {[1, 2, 5, 10].map((qty) => (
+                    <option
+                      key={qty}
+                      value={qty}
+                      disabled={qty > item.product.stock_kg}
+                    >
+                      {qty} kg
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div className="flex items-center gap-4">

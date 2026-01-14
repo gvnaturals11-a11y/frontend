@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils/cn'
 
 interface ShipmentTrackingProps {
   orderId: string
-  orderStatus?: 'CREATED' | 'PAID' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED'
+  orderStatus?: 'PENDING_PAYMENT' | 'PAID' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED' | 'OUT FOR DELIVERY' | 'FAILED'
 }
 
 // Tracking stages in order
@@ -159,11 +159,11 @@ export const ShipmentTracking: React.FC<ShipmentTrackingProps> = ({ orderId, ord
 
   // Determine current stage based on shipment status and order status
   const getCurrentStage = (): TrackingStage => {
-    // If order is still CREATED or PAID, show "ordered" stage even if shipment exists
-    if (orderStatus === 'CREATED' || orderStatus === 'PAID') {
+    // If order is still PENDING_PAYMENT or PAID, show "ordered" stage even if shipment exists
+    if (orderStatus === 'PENDING_PAYMENT' || orderStatus === 'PAID') {
       return 'ordered'
     }
-    
+
     // Otherwise, determine based on shipment status
     switch (shipment.status) {
       case 'PICKED':
@@ -202,7 +202,7 @@ export const ShipmentTracking: React.FC<ShipmentTrackingProps> = ({ orderId, ord
       <div className="space-y-6">
         <div>
           <h2 className="text-xl font-bold mb-6">Track Your Order</h2>
-          
+
           {/* Progress Timeline */}
           <div className="relative">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -225,8 +225,8 @@ export const ShipmentTracking: React.FC<ShipmentTrackingProps> = ({ orderId, ord
                       {/* Stage Number Circle */}
                       <div className={cn(
                         'w-12 h-12 rounded-full flex items-center justify-center mb-3 transition-all',
-                        isCompleted 
-                          ? `bg-white dark:bg-gray-800 ${stage.completedColor} shadow-md` 
+                        isCompleted
+                          ? `bg-white dark:bg-gray-800 ${stage.completedColor} shadow-md`
                           : 'bg-gray-200 dark:bg-gray-700 text-gray-400'
                       )}>
                         {isCompleted && !isActive ? (
@@ -255,7 +255,7 @@ export const ShipmentTracking: React.FC<ShipmentTrackingProps> = ({ orderId, ord
                       {/* Stage Title */}
                       <h3 className={cn(
                         'font-semibold text-sm mb-1 transition-all',
-                        isCompleted 
+                        isCompleted
                           ? (isActive ? stage.completedColor : 'text-gray-900 dark:text-gray-100')
                           : stage.pendingColor
                       )}>
@@ -265,8 +265,8 @@ export const ShipmentTracking: React.FC<ShipmentTrackingProps> = ({ orderId, ord
                       {/* Stage Description */}
                       <p className={cn(
                         'text-xs transition-all',
-                        isCompleted 
-                          ? 'text-gray-700 dark:text-gray-300' 
+                        isCompleted
+                          ? 'text-gray-700 dark:text-gray-300'
                           : 'text-gray-500 dark:text-gray-500'
                       )}>
                         {stage.description}
@@ -295,8 +295,8 @@ export const ShipmentTracking: React.FC<ShipmentTrackingProps> = ({ orderId, ord
                       <div className="hidden md:block absolute top-1/2 left-full w-full -translate-y-1/2">
                         <div className={cn(
                           'h-0.5 transition-all',
-                          isStageCompleted(stageKey) 
-                            ? 'bg-green-500' 
+                          isStageCompleted(stageKey)
+                            ? 'bg-green-500'
                             : 'bg-gray-300 dark:bg-gray-600'
                         )} />
                       </div>

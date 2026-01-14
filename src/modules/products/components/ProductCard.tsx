@@ -21,6 +21,7 @@ interface ProductCardProps {
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const router = useRouter()
   const addItem = useCartStore((state) => state.addItem)
+  const items = useCartStore((state) => state.items)
   const { isAuthenticated } = useAuthStore()
 
   const getImageUrl = (imagePath?: string) => {
@@ -33,14 +34,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    
+
     // Check if user is authenticated
     if (!isAuthenticated) {
       toast.error('Please login to add items to cart')
       router.push('/login')
       return
     }
-    
+
     addItem({
       product,
       quantity_kg: 1,
@@ -49,6 +50,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   }
 
   const isOutOfStock = product.stock_kg <= 0
+  const isInCart = items.some(item => item.product._id === product._id)
   const imageUrl = getImageUrl(product.image)
 
   return (
@@ -83,7 +85,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               {product.name}
             </h3>
           </Link>
-          
+
           {product.description && (
             <p className="text-sm text-coffee-600 mb-4 line-clamp-2">
               {product.description}
@@ -104,11 +106,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               variant="primary"
               size="md"
               onClick={handleAddToCart}
-              disabled={isOutOfStock || !product.is_active}
+              disabled={isOutOfStock || !product.is_active || isInCart}
               className="w-full"
             >
               <ShoppingCart className="w-4 h-4 mr-2" />
-              Add to Cart
+              {isInCart ? 'Already in Cart' : 'Add to Cart'}
             </Button>
           </div>
         </div>

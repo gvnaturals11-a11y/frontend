@@ -34,3 +34,13 @@ export interface AdminLoginRequest {
   password: string
 }
 
+export interface RegisterRequest {
+  name: string
+  phone: string
+  password?: string
+}
+
+export interface LoginRequest {
+  phone: string
+  password?: string
+}

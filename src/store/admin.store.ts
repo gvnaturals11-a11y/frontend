@@ -13,18 +13,19 @@ interface AdminState {
 
 const getStoredAdmin = () => {
   if (typeof window === 'undefined') return { admin: null, token: null }
-  
+
   const token = localStorage.getItem(ADMIN_TOKEN_STORAGE_KEY)
   const adminStr = localStorage.getItem('admin_user')
   const admin = adminStr ? JSON.parse(adminStr) : null
-  
+
   return { admin, token }
 }
 
 export const useAdminStore = create<AdminState>((set) => ({
-  ...getStoredAdmin(),
+  admin: null,
+  token: null,
   isAuthenticated: false,
-  
+
   setAuth: (admin, token) => {
     if (typeof window !== 'undefined') {
       localStorage.setItem(ADMIN_TOKEN_STORAGE_KEY, token)
@@ -32,7 +33,7 @@ export const useAdminStore = create<AdminState>((set) => ({
     }
     set({ admin, token, isAuthenticated: true })
   },
-  
+
   clearAuth: () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem(ADMIN_TOKEN_STORAGE_KEY)
@@ -40,7 +41,7 @@ export const useAdminStore = create<AdminState>((set) => ({
     }
     set({ admin: null, token: null, isAuthenticated: false })
   },
-  
+
   init: () => {
     const { admin, token } = getStoredAdmin()
     set({ admin, token, isAuthenticated: !!token && !!admin })

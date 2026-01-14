@@ -43,17 +43,17 @@ class ApiClient {
     // Admin client interceptors - supports both localStorage and NextAuth session
     this.adminClient.interceptors.request.use((config) => {
       let token: string | null | undefined = null
-      
+
       // Try to get token from localStorage first (most reliable, always up-to-date)
       if (typeof window !== 'undefined') {
         token = localStorage.getItem(ADMIN_TOKEN_STORAGE_KEY)
       }
-      
+
       // Fallback to token getter (NextAuth session)
       if (!token && this.adminTokenGetter) {
         token = this.adminTokenGetter()
       }
-      
+
       if (token) {
         config.headers.Authorization = `Bearer ${token}`
       }
@@ -62,7 +62,7 @@ class ApiClient {
       if (config.data instanceof FormData) {
         delete config.headers['Content-Type']
       }
-      
+
       return config
     })
 
@@ -72,7 +72,7 @@ class ApiClient {
       if (error.response?.status === 401) {
         if (typeof window !== 'undefined') {
           localStorage.removeItem(TOKEN_STORAGE_KEY)
-          window.location.href = '/login'
+          // Do not redirect on login page; let UI handle error
         }
       }
       return Promise.reject(error.response?.data || error.message)
@@ -81,7 +81,7 @@ class ApiClient {
       if (error.response?.status === 401) {
         if (typeof window !== 'undefined') {
           localStorage.removeItem(ADMIN_TOKEN_STORAGE_KEY)
-          window.location.href = '/admin/login'
+          // Do not redirect automatically; UI can handle admin auth errors
         }
       }
       return Promise.reject(error.response?.data || error.message)

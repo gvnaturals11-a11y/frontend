@@ -14,10 +14,12 @@ export default function VerifyOtpPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const phone = searchParams.get('phone') || ''
-  
+
+  const nameParam = searchParams.get('name') || ''
+
   const [otp, setOtp] = useState('')
-  const [name, setName] = useState('')
-  const [showNameInput, setShowNameInput] = useState(false)
+  const [name, setName] = useState(nameParam)
+  const [showNameInput, setShowNameInput] = useState(!nameParam)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [resendCooldown, setResendCooldown] = useState(0)
@@ -30,22 +32,44 @@ export default function VerifyOtpPage() {
   }, [phone, router])
 
   useEffect(() => {
+    if (nameParam) {
+      setName(nameParam)
+      setShowNameInput(false)
+    }
+  }, [nameParam])
+
+  useEffect(() => {
     if (resendCooldown > 0) {
       const timer = setTimeout(() => setResendCooldown(resendCooldown - 1), 1000)
       return () => clearTimeout(timer)
     }
   }, [resendCooldown])
 
-  const handleOtpComplete = async (completedOtp: string) => {
-    setOtp(completedOtp)
+  const handleOtpChange = (newOtp: string) => {
+    setOtp(newOtp)
     setError('')
+  }
+
+  const handleVerify = async () => {
+    if (otp.length !== 6) {
+      setError('Please enter a complete 6-digit OTP')
+      return
+    }
+
+    if (!name.trim()) {
+      setError('Name is required')
+      setShowNameInput(true)
+      return
+    }
+
     setIsLoading(true)
+    setError('')
 
     try {
       const response = await authApi.verifyOtp({
         phone,
-        otp: completedOtp,
-        name: showNameInput ? name : undefined,
+        otp,
+        name: name.trim(),
       })
 
       if (response.data) {
@@ -62,11 +86,11 @@ export default function VerifyOtpPage() {
     } catch (err: any) {
       const errorMessage = err?.message || 'Invalid OTP'
       setError(errorMessage)
-      
+
       if (errorMessage.includes('name') || errorMessage.includes('Name')) {
         setShowNameInput(true)
       }
-      
+
       toast.error(errorMessage)
     } finally {
       setIsLoading(false)
@@ -99,7 +123,8 @@ export default function VerifyOtpPage() {
 
       <div className="space-y-6">
         <OTPInput
-          onComplete={handleOtpComplete}
+          onComplete={(val) => setOtp(val)}
+          onChange={handleOtpChange}
           error={error}
           disabled={isLoading}
         />
@@ -116,6 +141,16 @@ export default function VerifyOtpPage() {
             />
           </div>
         )}
+
+        <Button
+          type="button"
+          onClick={handleVerify}
+          className="w-full"
+          disabled={isLoading || otp.length !== 6}
+          isLoading={isLoading}
+        >
+          Verify OTP
+        </Button>
 
         <div className="text-center">
           <button

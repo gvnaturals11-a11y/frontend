@@ -15,20 +15,24 @@ import { cn } from '@/lib/utils/cn'
 import { API_BASE_URL } from '@/lib/utils/constants'
 
 const statusColors: Record<OrderStatus, string> = {
-  CREATED: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+  PENDING_PAYMENT: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
   PAID: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
   SHIPPED: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
   DELIVERED: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+  'OUT FOR DELIVERY': 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200',
   CANCELLED: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+  FAILED: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200',
 }
 
 const getStatusLabel = (status: OrderStatus): string => {
   const labels: Record<OrderStatus, string> = {
-    CREATED: 'ORDERED',
+    PENDING_PAYMENT: 'PAYMENT PENDING',
     PAID: 'PAID',
     SHIPPED: 'SHIPPED',
     DELIVERED: 'DELIVERED',
+    'OUT FOR DELIVERY': 'OUT FOR DELIVERY',
     CANCELLED: 'CANCELLED',
+    FAILED: 'FAILED',
   }
   return labels[status] || status
 }
@@ -46,7 +50,7 @@ export default function OrderDetailPage() {
       // Backend returns: { statusCode: 200, status: "success", data: {...}, message: "..." }
       // After interceptor, response is the ApiResponse object
       // So we need to access response.data to get the order object
-      
+
       // Check if response is ApiResponse format with data property
       if (response && typeof response === 'object' && 'data' in response) {
         const orderData = (response as any).data
@@ -55,12 +59,12 @@ export default function OrderDetailPage() {
           return orderData
         }
       }
-      
+
       // Check if response is already an order object (old format)
       if (response && typeof response === 'object' && '_id' in response) {
         return response as any
       }
-      
+
       return null
     },
     enabled: !!orderId,
@@ -93,7 +97,7 @@ export default function OrderDetailPage() {
     )
   }
 
-  const statusColor = statusColors[order.status as OrderStatus] || statusColors.CREATED
+  const statusColor = statusColors[order.status as OrderStatus] || statusColors.PENDING_PAYMENT
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -123,7 +127,7 @@ export default function OrderDetailPage() {
                     <div key={item._id || index} className="border-b border-gray-200 dark:border-gray-700 pb-4 last:border-0 last:pb-0">
                       <div className="flex gap-4">
                         {imageUrl ? (
-                          <Link 
+                          <Link
                             href={`/products/${productId}`}
                             className="flex-shrink-0"
                           >
@@ -144,7 +148,7 @@ export default function OrderDetailPage() {
                           </div>
                         )}
                         <div className="flex-1 min-w-0">
-                          <Link 
+                          <Link
                             href={`/products/${productId}`}
                             className="block"
                           >
@@ -205,7 +209,7 @@ export default function OrderDetailPage() {
                 <div className="flex justify-between">
                   <span className="text-coffee-600 dark:text-coffee-400">Payment Method</span>
                   <span className="font-semibold text-coffee-900 dark:text-coffee-100">
-                    {order.payment_method === 'COD' ? 'Cash on Delivery' : 'Prepaid'}
+                    Online Payment (Razorpay)
                   </span>
                 </div>
               )}
@@ -214,12 +218,12 @@ export default function OrderDetailPage() {
                 <span className="text-coffee-900 dark:text-coffee-100">
                   {order.createdAt
                     ? new Date(order.createdAt).toLocaleDateString('en-IN', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })
                     : 'N/A'}
                 </span>
               </div>
@@ -273,10 +277,14 @@ export default function OrderDetailPage() {
                 <span className="text-coffee-600 dark:text-coffee-400">Subtotal</span>
                 <span className="font-medium text-coffee-900 dark:text-coffee-100">₹{order.subtotal.toFixed(2)}</span>
               </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-coffee-600 dark:text-coffee-400">Shipping</span>
+                <span className="font-medium text-coffee-900 dark:text-coffee-100">₹{(order.shipping_cost || 0).toFixed(2)}</span>
+              </div>
               <div className="border-t border-gray-200 dark:border-gray-700 pt-3">
                 <div className="flex justify-between text-lg font-bold">
                   <span className="text-coffee-900 dark:text-coffee-100">Total</span>
-                  <span className="text-coffee-900 dark:text-coffee-100">₹{order.subtotal.toFixed(2)}</span>
+                  <span className="text-coffee-900 dark:text-coffee-100">₹{(order.total_amount || order.subtotal).toFixed(2)}</span>
                 </div>
               </div>
             </div>

@@ -7,6 +7,7 @@ export interface Product {
   stock_kg: number
   is_active: boolean
   image?: string
+  shipping_cost?: number
   createdAt?: string
   updatedAt?: string
 }

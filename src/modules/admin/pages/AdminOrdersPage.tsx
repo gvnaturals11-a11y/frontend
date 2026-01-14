@@ -11,14 +11,16 @@ import { cn } from '@/lib/utils/cn'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 
-const statusOptions: OrderStatus[] = ['CREATED', 'PAID', 'SHIPPED', 'DELIVERED', 'CANCELLED']
+const statusOptions: OrderStatus[] = ['PENDING_PAYMENT', 'PAID', 'SHIPPED', 'DELIVERED', 'OUT FOR DELIVERY', 'CANCELLED', 'FAILED']
 
 const statusColors: Record<OrderStatus, string> = {
-  CREATED: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+  PENDING_PAYMENT: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
   PAID: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
   SHIPPED: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
   DELIVERED: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+  'OUT FOR DELIVERY': 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200',
   CANCELLED: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+  FAILED: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200',
 }
 
 export default function AdminOrdersPage() {
@@ -126,29 +128,23 @@ export default function AdminOrdersPage() {
                         <div className="text-sm text-gray-600 dark:text-gray-400">
                           {order.createdAt
                             ? new Date(order.createdAt).toLocaleDateString('en-IN', {
-                                year: 'numeric',
-                                month: 'short',
-                                day: 'numeric',
-                              })
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric',
+                            })
                             : 'N/A'}
                         </div>
                       </td>
                       <td className="p-4">
                         <div className="font-semibold text-gray-900 dark:text-gray-100">
-                          ₹{order.subtotal?.toFixed(2) || '0.00'}
+                          ₹{(order.total_amount || order.subtotal || 0).toFixed(2)}
                         </div>
                       </td>
                       <td className="p-4">
                         <div className="text-sm">
-                          {order.payment_method === 'COD' ? (
-                            <span className="px-2 py-1 bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200 rounded text-xs font-medium">
-                              COD
-                            </span>
-                          ) : (
-                            <span className="px-2 py-1 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded text-xs font-medium">
-                              Prepaid
-                            </span>
-                          )}
+                          <span className="px-2 py-1 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded text-xs font-medium">
+                            Online
+                          </span>
                         </div>
                       </td>
                       <td className="p-4">

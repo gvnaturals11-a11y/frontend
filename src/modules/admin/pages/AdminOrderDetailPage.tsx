@@ -11,14 +11,16 @@ import { OrderStatus } from '@/types/order.types'
 import { cn } from '@/lib/utils/cn'
 import toast from 'react-hot-toast'
 
-const statusOptions: OrderStatus[] = ['CREATED', 'PAID', 'SHIPPED', 'DELIVERED', 'CANCELLED']
+const statusOptions: OrderStatus[] = ['PENDING_PAYMENT', 'PAID', 'SHIPPED', 'DELIVERED', 'OUT FOR DELIVERY', 'CANCELLED', 'FAILED']
 
 const statusColors: Record<OrderStatus, string> = {
-  CREATED: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+  PENDING_PAYMENT: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
   PAID: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
   SHIPPED: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
   DELIVERED: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+  'OUT FOR DELIVERY': 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200',
   CANCELLED: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+  FAILED: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200',
 }
 
 export default function AdminOrderDetailPage() {
@@ -64,7 +66,7 @@ export default function AdminOrderDetailPage() {
     )
   }
 
-  const statusColor = statusColors[order.status as OrderStatus] || statusColors.CREATED
+  const statusColor = statusColors[order.status as OrderStatus] || statusColors.PENDING_PAYMENT
 
   return (
     <div>
@@ -106,30 +108,34 @@ export default function AdminOrderDetailPage() {
                 <span>
                   {order.createdAt
                     ? new Date(order.createdAt).toLocaleDateString('en-IN', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })
                     : 'N/A'}
                 </span>
               </div>
               {order.payment_method && (
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-400">Payment Method</span>
-                  <span className="font-semibold">
-                    {order.payment_method === 'COD' ? (
-                      <span className="text-orange-600 dark:text-orange-400">Cash on Delivery</span>
-                    ) : (
-                      <span className="text-green-600 dark:text-green-400">Prepaid</span>
-                    )}
+                  <span className="font-semibold text-green-600 dark:text-green-400">
+                    Online Payment
                   </span>
                 </div>
               )}
-              <div className="flex justify-between text-lg font-bold pt-4 border-t">
-                <span>Total Amount</span>
+              <div className="flex justify-between border-t pt-2">
+                <span className="text-gray-600 dark:text-gray-400">Subtotal</span>
                 <span>₹{order.subtotal.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600 dark:text-gray-400">Shipping</span>
+                <span>₹{(order.shipping_cost || 0).toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between text-lg font-bold pt-2 border-t text-green-600 dark:text-green-400">
+                <span>Total Amount</span>
+                <span>₹{(order.total_amount || order.subtotal).toFixed(2)}</span>
               </div>
             </div>
           </Card>

@@ -11,24 +11,31 @@ import { ShoppingBag, ShoppingCart } from 'lucide-react'
 
 export default function CartPage() {
   const router = useRouter()
+  const [mounted, setMounted] = React.useState(false)
   const { isAuthenticated } = useAuthStore()
   const items = useCartStore((state) => state.items)
   const getTotal = useCartStore((state) => state.getTotal)
+  const getShippingCost = useCartStore((state) => state.getShippingCost)
+  const getTotalWithShipping = useCartStore((state) => state.getTotalWithShipping)
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (mounted && !isAuthenticated) {
       router.push('/login')
       return
     }
-  }, [isAuthenticated, router])
+  }, [isAuthenticated, router, mounted])
 
-  if (!isAuthenticated) {
+  if (!mounted || !isAuthenticated) {
     return null
   }
 
   const total = getTotal()
-  const shipping = total > 0 ? 50 : 0
-  const finalTotal = total + shipping
+  const shipping = getShippingCost()
+  const finalTotal = getTotalWithShipping()
 
   if (items.length === 0) {
     return (

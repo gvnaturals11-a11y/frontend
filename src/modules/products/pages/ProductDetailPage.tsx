@@ -17,9 +17,21 @@ export default function ProductDetailPage() {
   const params = useParams()
   const router = useRouter()
   const productId = params.id as string
-  const [quantity, setQuantity] = useState(1)
+  const items = useCartStore((state) => state.items)
   const addItem = useCartStore((state) => state.addItem)
+  const updateQuantity = useCartStore((state) => state.updateQuantity)
   const { isAuthenticated } = useAuthStore()
+
+  // Find if product is already in cart
+  const cartItem = items.find(item => item.product._id === productId)
+  const [quantity, setQuantity] = useState(cartItem?.quantity_kg || 1)
+
+  // Update local quantity when cart changes
+  React.useEffect(() => {
+    if (cartItem) {
+      setQuantity(cartItem.quantity_kg)
+    }
+  }, [cartItem])
 
   const { data: product, isLoading, error } = useQuery({
     queryKey: ['product', productId],
@@ -29,7 +41,7 @@ export default function ProductDetailPage() {
       // Backend returns: { statusCode: 200, status: "success", data: {...}, message: "..." }
       // After interceptor, response is the ApiResponse object
       // So we need to access response.data to get the product object
-      
+
       // Check if response is ApiResponse format with data property
       if (response && typeof response === 'object' && 'data' in response) {
         const productData = (response as any).data
@@ -38,12 +50,12 @@ export default function ProductDetailPage() {
           return productData
         }
       }
-      
+
       // Check if response is already a product object (old format)
       if (response && typeof response === 'object' && '_id' in response) {
         return response as any
       }
-      
+
       return null
     },
     enabled: !!productId,
@@ -58,19 +70,26 @@ export default function ProductDetailPage() {
 
   const handleAddToCart = () => {
     if (!product) return
-    
+
     // Check if user is authenticated
     if (!isAuthenticated) {
       toast.error('Please login to add items to cart')
       router.push('/login')
       return
     }
-    
-    addItem({
-      product,
-      quantity_kg: quantity,
-    })
-    toast.success(`${quantity}kg of ${product.name} added to cart!`)
+
+    if (cartItem) {
+      // Product already in cart, update quantity
+      updateQuantity(product._id, quantity)
+      toast.success(`Updated ${product.name} to ${quantity}kg!`)
+    } else {
+      // Add new item to cart
+      addItem({
+        product,
+        quantity_kg: quantity,
+      })
+      toast.success(`${quantity}kg of ${product.name} added to cart!`)
+    }
   }
 
   const handleQuantityChange = (delta: number) => {
@@ -149,31 +168,33 @@ export default function ProductDetailPage() {
           <Card>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Quantity (kg)</label>
-                <div className="flex items-center gap-4">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleQuantityChange(-1)}
-                    disabled={quantity <= 1}
-                  >
-                    <Minus className="w-4 h-4" />
-                  </Button>
-                  <span className="text-2xl font-semibold w-16 text-center">
-                    {quantity}
-                  </span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleQuantityChange(1)}
-                    disabled={quantity >= product.stock_kg || isOutOfStock}
-                  >
-                    <Plus className="w-4 h-4" />
-                  </Button>
+                <label className="block text-sm font-medium mb-3">Select Quantity</label>
+                <div className="grid grid-cols-4 gap-2 mb-4">
+                  {[1, 2, 5, 10].map((qty) => (
+                    <button
+                      key={qty}
+                      type="button"
+                      onClick={() => setQuantity(qty)}
+                      disabled={qty > product.stock_kg || isOutOfStock}
+                      className={`
+                        py-2 text-sm font-medium rounded-md focus:outline-none transition-all
+                        ${quantity === qty
+                          ? 'bg-primary text-white shadow-md ring-2 ring-primary ring-offset-2'
+                          : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                        }
+                        ${qty > product.stock_kg || isOutOfStock ? 'opacity-50 cursor-not-allowed' : ''}
+                      `}
+                    >
+                      {qty} kg
+                    </button>
+                  ))}
                 </div>
-                <p className="text-sm text-gray-500 mt-2">
-                  Total: ₹{(product.price_per_kg * quantity).toFixed(2)}
-                </p>
+                <div className="flex justify-between items-center py-3 border-t border-b border-gray-100 dark:border-gray-700 mb-4">
+                  <span className="text-gray-600">Total Price:</span>
+                  <span className="text-2xl font-bold text-coffee-800">
+                    ₹{(product.price_per_kg * quantity).toFixed(2)}
+                  </span>
+                </div>
               </div>
 
               <Button

@@ -68,10 +68,10 @@ export const Providers: React.FC<{ children: React.ReactNode }> = ({ children })
   }, [initAuth, initAdmin, initCart, initTheme])
 
   return (
-    <SessionProvider 
-      basePath="/api/auth/admin" 
+    <SessionProvider
+      basePath="/api/auth/admin"
       refetchInterval={0}
-      refetchOnWindowFocus={true}
+      refetchOnWindowFocus={false}
     >
       <AdminSessionSync>
         <QueryClientProvider client={queryClient}>

@@ -16,12 +16,13 @@ interface MainLayoutProps {
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const router = useRouter()
   const pathname = usePathname()
-  const { user, isAuthenticated, init, clearAuth } = useAuthStore()
+  const [mounted, setMounted] = React.useState(false)
+  const { user, isAuthenticated, clearAuth } = useAuthStore()
   const itemCount = useCartStore((state) => state.getItemCount())
 
   useEffect(() => {
-    init()
-  }, [init])
+    setMounted(true)
+  }, [])
 
   const handleLogout = () => {
     clearAuth()
@@ -33,6 +34,48 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   if (isAuthPage || isAdminPage) {
     return <>{children}</>
+  }
+
+  // Helper to render auth-dependent content only after mount
+  const renderAuthContent = () => {
+    if (!mounted) return null
+
+    if (isAuthenticated) {
+      return (
+        <>
+          <Link href="/cart" className="relative text-coffee-700 hover:text-coffee-800">
+            <ShoppingCart className="w-6 h-6" />
+            {itemCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-coffee-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {itemCount}
+              </span>
+            )}
+          </Link>
+
+          <Link href="/profile" className="flex items-center gap-2 text-coffee-700 hover:text-coffee-800">
+            <User className="w-5 h-5" />
+            <span className="hidden md:block">{user?.name}</span>
+          </Link>
+
+          <Link href="/orders" className="hidden md:block text-coffee-700 hover:text-coffee-800">
+            Orders
+          </Link>
+
+          <Button variant="ghost" size="sm" onClick={handleLogout}>
+            <LogOut className="w-4 h-4 mr-2" />
+            Logout
+          </Button>
+        </>
+      )
+    }
+
+    return (
+      <Link href="/login">
+        <Button variant="primary" size="sm">
+          Login
+        </Button>
+      </Link>
+    )
   }
 
   return (
@@ -47,17 +90,15 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             <nav className="hidden md:flex items-center gap-6">
               <Link
                 href="/"
-                className={`hover:text-coffee-700 transition-colors ${
-                  pathname === '/' ? 'text-coffee-700 font-semibold' : 'text-coffee-600'
-                }`}
+                className={`hover:text-coffee-700 transition-colors ${pathname === '/' ? 'text-coffee-700 font-semibold' : 'text-coffee-600'
+                  }`}
               >
                 <Home className="w-5 h-5" />
               </Link>
               <Link
                 href="/products"
-                className={`hover:text-coffee-700 transition-colors ${
-                  pathname === '/products' ? 'text-coffee-700 font-semibold' : 'text-coffee-600'
-                }`}
+                className={`hover:text-coffee-700 transition-colors ${pathname === '/products' ? 'text-coffee-700 font-semibold' : 'text-coffee-600'
+                  }`}
               >
                 Products
               </Link>
@@ -66,38 +107,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             <div className="flex items-center gap-4">
               {/* <ThemeToggle /> */}
 
-              {isAuthenticated ? (
-                <>
-                  <Link href="/cart" className="relative text-coffee-700 hover:text-coffee-800">
-                    <ShoppingCart className="w-6 h-6" />
-                    {itemCount > 0 && (
-                      <span className="absolute -top-2 -right-2 bg-coffee-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                        {itemCount}
-                      </span>
-                    )}
-                  </Link>
-
-                  <Link href="/profile" className="flex items-center gap-2 text-coffee-700 hover:text-coffee-800">
-                    <User className="w-5 h-5" />
-                    <span className="hidden md:block">{user?.name}</span>
-                  </Link>
-
-                  <Link href="/orders" className="hidden md:block text-coffee-700 hover:text-coffee-800">
-                    Orders
-                  </Link>
-
-                  <Button variant="ghost" size="sm" onClick={handleLogout}>
-                    <LogOut className="w-4 h-4 mr-2" />
-                    Logout
-                  </Button>
-                </>
-              ) : (
-                <Link href="/login">
-                  <Button variant="primary" size="sm">
-                    Login
-                  </Button>
-                </Link>
-              )}
+              {renderAuthContent()}
             </div>
           </div>
         </div>

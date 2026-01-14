@@ -1,11 +1,12 @@
 'use client'
 
 import React, { useRef, useEffect, useState } from 'react'
-import { Input } from '@/components/ui/Input'
+
 
 interface OTPInputProps {
   length?: number
   onComplete: (otp: string) => void
+  onChange?: (otp: string) => void
   error?: string
   disabled?: boolean
 }
@@ -13,6 +14,7 @@ interface OTPInputProps {
 export const OTPInput: React.FC<OTPInputProps> = ({
   length = 6,
   onComplete,
+  onChange,
   error,
   disabled,
 }) => {
@@ -26,12 +28,17 @@ export const OTPInput: React.FC<OTPInputProps> = ({
     newOtp[index] = value.slice(-1)
     setOtp(newOtp)
 
+    const otpString = newOtp.join('')
+    if (onChange) {
+      onChange(otpString)
+    }
+
     if (value && index < length - 1) {
       inputRefs.current[index + 1]?.focus()
     }
 
     if (newOtp.every((digit) => digit !== '')) {
-      onComplete(newOtp.join(''))
+      onComplete(otpString)
     }
   }
 
@@ -52,8 +59,12 @@ export const OTPInput: React.FC<OTPInputProps> = ({
         }
       })
       setOtp(newOtp)
+      const otpString = newOtp.join('')
+      if (onChange) {
+        onChange(otpString)
+      }
       if (newOtp.every((digit) => digit !== '')) {
-        onComplete(newOtp.join(''))
+        onComplete(otpString)
       }
     }
   }

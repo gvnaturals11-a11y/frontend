@@ -41,16 +41,17 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   } = useForm<CreateProductRequest>({
     defaultValues: product
       ? {
-          name: product.name,
-          slug: product.slug,
-          description: product.description || '',
-          price_per_kg: product.price_per_kg,
-          stock_kg: product.stock_kg,
-          is_active: product.is_active,
-        }
+        name: product.name,
+        slug: product.slug,
+        description: product.description || '',
+        price_per_kg: product.price_per_kg,
+        stock_kg: product.stock_kg,
+        shipping_cost: product.shipping_cost,
+        is_active: product.is_active,
+      }
       : {
-          is_active: true,
-        },
+        is_active: true,
+      },
   })
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,7 +69,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
       }
       setSelectedFile(file)
       setValue('image', file)
-      
+
       // Create preview
       const reader = new FileReader()
       reader.onloadend = () => {
@@ -168,7 +169,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-3 gap-4">
         <Input
           label="Price per kg (₹)"
           type="number"
@@ -189,6 +190,17 @@ export const ProductForm: React.FC<ProductFormProps> = ({
             min: { value: 0, message: 'Stock must be positive' },
           })}
           error={errors.stock_kg?.message}
+        />
+
+        <Input
+          label="Shipping Cost (₹)"
+          type="number"
+          step="0.01"
+          {...register('shipping_cost', {
+            min: { value: 0, message: 'Shipping cost must be positive' },
+            valueAsNumber: true,
+          })}
+          error={errors.shipping_cost?.message}
         />
       </div>
 

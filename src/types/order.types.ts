@@ -28,7 +28,7 @@ export interface ShippingAddress {
   country: string
 }
 
-export type PaymentMethod = 'COD' | 'PREPAID'
+export type PaymentMethod = 'PREPAID'
 
 export interface CreateOrderRequest {
   items: CreateOrderItem[]
@@ -36,16 +36,22 @@ export interface CreateOrderRequest {
   payment_method?: PaymentMethod
 }
 
-export type OrderStatus = 'CREATED' | 'PAID' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED'
+export type OrderStatus = 'PENDING_PAYMENT' | 'PAID' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED' | 'OUT FOR DELIVERY' | 'FAILED'
 
 export interface Order {
   _id: string
   order_number: string
   user_id: string
   status: OrderStatus
-  payment_method?: PaymentMethod
+  payment_method: PaymentMethod
   subtotal: number
+  shipping_cost: number
+  total_amount: number
   shipping_address: ShippingAddress
+  razorpay_order_id?: string
+  razorpay_payment_id?: string
+  razorpay_key?: string
+  razorpay_order?: any
   items?: OrderItem[]
   createdAt?: string
   updatedAt?: string

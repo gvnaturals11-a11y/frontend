@@ -14,26 +14,30 @@ interface OrderCardProps {
 }
 
 const statusColors: Record<OrderStatus, string> = {
-  CREATED: 'bg-yellow-100 text-yellow-800',
+  PENDING_PAYMENT: 'bg-yellow-100 text-yellow-800',
   PAID: 'bg-blue-100 text-blue-800',
   SHIPPED: 'bg-purple-100 text-purple-800',
   DELIVERED: 'bg-green-100 text-green-800',
+  'OUT FOR DELIVERY': 'bg-indigo-100 text-indigo-800',
   CANCELLED: 'bg-red-100 text-red-800',
+  FAILED: 'bg-gray-100 text-gray-800',
 }
 
 const getStatusLabel = (status: OrderStatus): string => {
   const labels: Record<OrderStatus, string> = {
-    CREATED: 'ORDERED',
+    PENDING_PAYMENT: 'PAYMENT PENDING',
     PAID: 'PAID',
     SHIPPED: 'SHIPPED',
     DELIVERED: 'DELIVERED',
+    'OUT FOR DELIVERY': 'OUT FOR DELIVERY',
     CANCELLED: 'CANCELLED',
+    FAILED: 'FAILED',
   }
   return labels[status] || status
 }
 
 export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
-  const statusColor = statusColors[order.status as OrderStatus] || statusColors.CREATED
+  const statusColor = statusColors[order.status as OrderStatus] || statusColors.PENDING_PAYMENT
 
   return (
     <motion.div
@@ -53,10 +57,10 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
                 <p className="text-sm text-coffee-600">
                   {order.createdAt
                     ? new Date(order.createdAt).toLocaleDateString('en-IN', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      })
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })
                     : 'N/A'}
                 </p>
               </div>
@@ -66,13 +70,8 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
               <span className={cn('px-3 py-1 rounded-full text-xs font-medium', statusColor)}>
                 {getStatusLabel(order.status as OrderStatus)}
               </span>
-              <span className="text-lg font-bold text-coffee-900">₹{order.subtotal.toFixed(2)}</span>
-              {order.payment_method === 'COD' && (
-                <span className="text-xs text-coffee-600 bg-coffee-50 dark:bg-coffee-900/20 px-2 py-1 rounded">
-                  COD
-                </span>
-              )}
-              {(order.status === 'SHIPPED' || order.status === 'DELIVERED') && (
+              <span className="text-lg font-bold text-coffee-900">₹{(order.total_amount || order.subtotal).toFixed(2)}</span>
+              {(order.status === 'SHIPPED' || order.status === 'DELIVERED' || order.status === 'OUT FOR DELIVERY') && (
                 <span className="text-xs text-coffee-600 flex items-center gap-1">
                   <Package className="w-3 h-3" />
                   Track Shipment
