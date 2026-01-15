@@ -41,8 +41,8 @@ export const ShippingForm: React.FC<ShippingFormProps> = ({
         {...register('phone', {
           required: 'Phone is required',
           pattern: {
-            value: /^\+91[0-9]{10}$/,
-            message: 'Please enter a valid Indian phone number',
+            value: /^[0-9]{10}$/,
+            message: 'Please enter a valid 10 digit Indian phone number',
           },
         })}
         error={errors.phone?.message}
