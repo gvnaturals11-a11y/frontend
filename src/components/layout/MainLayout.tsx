@@ -43,14 +43,15 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     if (isAuthenticated) {
       return (
         <>
-          <Link href="/cart" className="relative text-coffee-700 hover:text-coffee-800">
+          {/* CART FUNCTIONALITY COMMENTED OUT - Using direct order placement */}
+          {/* <Link href="/cart" className="relative text-coffee-700 hover:text-coffee-800">
             <ShoppingCart className="w-6 h-6" />
             {itemCount > 0 && (
               <span className="absolute -top-2 -right-2 bg-coffee-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                 {itemCount}
               </span>
             )}
-          </Link>
+          </Link> */}
 
           <Link href="/profile" className="flex items-center gap-2 text-coffee-700 hover:text-coffee-800">
             <User className="w-5 h-5" />
@@ -147,8 +148,8 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             <div>
               <h4 className="font-semibold text-white mb-4">Contact</h4>
               <ul className="space-y-2 text-sm text-coffee-300">
-                <li>Email: info@gvnatural.com</li>
-                <li>Phone: +91 1234567890</li>
+                <li>Email: gvnaturals11@gmail.com</li>
+                <li>Phone: +91 8222073728</li>
               </ul>
             </div>
           </div>

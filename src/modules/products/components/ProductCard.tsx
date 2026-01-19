@@ -31,26 +31,42 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     return `${API_BASE_URL}/uploads/products/${imagePath}`
   }
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  // CART FUNCTIONALITY COMMENTED OUT - Using direct order placement
+  // const handleAddToCart = (e: React.MouseEvent) => {
+  //   e.preventDefault()
+  //   e.stopPropagation()
+
+  //   // Check if user is authenticated
+  //   if (!isAuthenticated) {
+  //     toast.error('Please login to add items to cart')
+  //     router.push('/login')
+  //     return
+  //   }
+
+  //   addItem({
+  //     product,
+  //     quantity_kg: 1,
+  //   })
+  //   toast.success(`${product.name} added to cart!`)
+  // }
+
+  const handleBuyNow = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
 
     // Check if user is authenticated
     if (!isAuthenticated) {
-      toast.error('Please login to add items to cart')
+      toast.error('Please login to place an order')
       router.push('/login')
       return
     }
 
-    addItem({
-      product,
-      quantity_kg: 1,
-    })
-    toast.success(`${product.name} added to cart!`)
+    // Navigate to product detail page for order placement
+    router.push(`/products/${product._id}`)
   }
 
   const isOutOfStock = product.stock_kg <= 0
-  const isInCart = items.some(item => item.product._id === product._id)
+  // const isInCart = items.some(item => item.product._id === product._id)
   const imageUrl = getImageUrl(product.image)
 
   return (
@@ -105,12 +121,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <Button
               variant="primary"
               size="md"
-              onClick={handleAddToCart}
-              disabled={isOutOfStock || !product.is_active || isInCart}
+              onClick={handleBuyNow}
+              disabled={isOutOfStock || !product.is_active}
               className="w-full"
             >
               <ShoppingCart className="w-4 h-4 mr-2" />
-              {isInCart ? 'Already in Cart' : 'Add to Cart'}
+              Buy Now
             </Button>
           </div>
         </div>

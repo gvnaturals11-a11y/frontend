@@ -86,12 +86,12 @@ export const ContactSectionNew: React.FC = () => {
                 </motion.div>
                 Contact Information
               </motion.h3>
-              
+
               <div className="space-y-6">
                 {[
-                  { icon: MapPin, title: 'Address', content: '123 Organic Street\nNatural City, NC 12345\nIndia' },
-                  { icon: Phone, title: 'Phone', content: '+91 1234567890' },
-                  { icon: Mail, title: 'Email', content: 'info@gvnatural.com' },
+                  { icon: MapPin, title: 'Address', content: 'Sarola, Jhajjar, Haryana, India (124108)' },
+                  { icon: Phone, title: 'Phone', content: '+91 8222073728' },
+                  { icon: Mail, title: 'Email', content: 'gvnaturals11@gmail.com' },
                   { icon: Clock, title: 'Business Hours', content: 'Monday - Friday: 9:00 AM - 6:00 PM\nSaturday: 10:00 AM - 4:00 PM\nSunday: Closed' },
                 ].map((item, index) => {
                   const Icon = item.icon

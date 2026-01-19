@@ -50,9 +50,7 @@ export const ContactSection: React.FC = () => {
                 <div>
                   <h4 className="font-semibold mb-1">Address</h4>
                   <p className="text-coffee-300">
-                    123 Organic Street<br />
-                    Natural City, NC 12345<br />
-                    India
+                    Sarola, Jhajjar, Haryana, India (124108)
                   </p>
                 </div>
               </div>
@@ -63,7 +61,7 @@ export const ContactSection: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold mb-1">Phone</h4>
-                  <p className="text-coffee-300">+91 1234567890</p>
+                  <p className="text-coffee-300">+91 8222073728</p>
                 </div>
               </div>
 
@@ -73,7 +71,7 @@ export const ContactSection: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold mb-1">Email</h4>
-                  <p className="text-coffee-300">info@gvnatural.com</p>
+                  <p className="text-coffee-300">gvnaturals11@gmail.com</p>
                 </div>
               </div>
             </div>
