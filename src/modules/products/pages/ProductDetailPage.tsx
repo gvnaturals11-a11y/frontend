@@ -52,18 +52,28 @@ export default function ProductDetailPage() {
         const productData = (response as any).data
         // Check if data has _id (it's the product object)
         if (productData && typeof productData === 'object' && '_id' in productData) {
+          console.log('📦 Product data received:', productData)
+          console.log('💰 Shipping costs:', {
+            '1kg': productData.shipping_cost_1kg,
+            '2kg': productData.shipping_cost_2kg,
+            '5kg': productData.shipping_cost_5kg,
+            '10kg': productData.shipping_cost_10kg,
+          })
           return productData
         }
       }
 
       // Check if response is already a product object (old format)
       if (response && typeof response === 'object' && '_id' in response) {
+        console.log('📦 Product data received (old format):', response)
         return response as any
       }
 
       return null
     },
     enabled: !!productId,
+    staleTime: 0, // Always fetch fresh data
+    gcTime: 0, // Don't cache
   })
 
   const getImageUrl = (imagePath?: string) => {
@@ -201,21 +211,28 @@ export default function ProductDetailPage() {
 
   // Calculate shipping cost based on quantity
   const getShippingCost = (qty: number): number => {
-    // Fixed shipping costs based on exact quantity
-    // 1kg -> ₹70, 2kg -> ₹130, 5kg -> ₹230, 10kg -> ₹350
+    if (!product) return 70
+
+    let shippingCost = 0
     switch (qty) {
       case 1:
-        return 70
+        shippingCost = product.shipping_cost_1kg || 70
+        break
       case 2:
-        return 130
+        shippingCost = product.shipping_cost_2kg || 130
+        break
       case 5:
-        return 230
+        shippingCost = product.shipping_cost_5kg || 230
+        break
       case 10:
-        return 350
+        shippingCost = product.shipping_cost_10kg || 350
+        break
       default:
-        // Fallback for any other quantity
-        return 70
+        shippingCost = product.shipping_cost_1kg || 70
     }
+
+    console.log(`🚚 Shipping cost for ${qty}kg:`, shippingCost)
+    return shippingCost
   }
 
   const subtotal = product ? product.price_per_kg * quantity : 0

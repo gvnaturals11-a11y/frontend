@@ -46,11 +46,18 @@ export const ProductForm: React.FC<ProductFormProps> = ({
         description: product.description || '',
         price_per_kg: product.price_per_kg,
         stock_kg: product.stock_kg,
-        shipping_cost: product.shipping_cost,
+        shipping_cost_1kg: product.shipping_cost_1kg,
+        shipping_cost_2kg: product.shipping_cost_2kg,
+        shipping_cost_5kg: product.shipping_cost_5kg,
+        shipping_cost_10kg: product.shipping_cost_10kg,
         is_active: product.is_active,
       }
       : {
         is_active: true,
+        shipping_cost_1kg: 70,
+        shipping_cost_2kg: 130,
+        shipping_cost_5kg: 230,
+        shipping_cost_10kg: 350,
       },
   })
 
@@ -169,7 +176,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
         />
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 gap-4">
         <Input
           label="Price per kg (₹)"
           type="number"
@@ -191,17 +198,52 @@ export const ProductForm: React.FC<ProductFormProps> = ({
           })}
           error={errors.stock_kg?.message}
         />
+      </div>
 
-        <Input
-          label="Shipping Cost (₹)"
-          type="number"
-          step="0.01"
-          {...register('shipping_cost', {
-            min: { value: 0, message: 'Shipping cost must be positive' },
-            valueAsNumber: true,
-          })}
-          error={errors.shipping_cost?.message}
-        />
+      <div>
+        <label className="block text-sm font-medium mb-3">Shipping Costs by Quantity</label>
+        <div className="grid grid-cols-4 gap-4">
+          <Input
+            label="1kg (₹)"
+            type="number"
+            step="0.01"
+            {...register('shipping_cost_1kg', {
+              min: { value: 0, message: 'Shipping cost must be positive' },
+              valueAsNumber: true,
+            })}
+            error={errors.shipping_cost_1kg?.message}
+          />
+          <Input
+            label="2kg (₹)"
+            type="number"
+            step="0.01"
+            {...register('shipping_cost_2kg', {
+              min: { value: 0, message: 'Shipping cost must be positive' },
+              valueAsNumber: true,
+            })}
+            error={errors.shipping_cost_2kg?.message}
+          />
+          <Input
+            label="5kg (₹)"
+            type="number"
+            step="0.01"
+            {...register('shipping_cost_5kg', {
+              min: { value: 0, message: 'Shipping cost must be positive' },
+              valueAsNumber: true,
+            })}
+            error={errors.shipping_cost_5kg?.message}
+          />
+          <Input
+            label="10kg (₹)"
+            type="number"
+            step="0.01"
+            {...register('shipping_cost_10kg', {
+              min: { value: 0, message: 'Shipping cost must be positive' },
+              valueAsNumber: true,
+            })}
+            error={errors.shipping_cost_10kg?.message}
+          />
+        </div>
       </div>
 
       <div className="flex items-center gap-2">

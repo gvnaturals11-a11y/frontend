@@ -7,7 +7,10 @@ export interface Product {
   stock_kg: number
   is_active: boolean
   image?: string
-  shipping_cost?: number
+  shipping_cost_1kg: number
+  shipping_cost_2kg: number
+  shipping_cost_5kg: number
+  shipping_cost_10kg: number
   createdAt?: string
   updatedAt?: string
 }

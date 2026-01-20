@@ -9,7 +9,10 @@ export interface CreateProductRequest {
   description?: string
   price_per_kg: number
   stock_kg: number
-  shipping_cost?: number
+  shipping_cost_1kg?: number
+  shipping_cost_2kg?: number
+  shipping_cost_5kg?: number
+  shipping_cost_10kg?: number
   is_active?: boolean
   image?: File | null
 }
@@ -31,7 +34,10 @@ export const adminApi = {
     if (data.description) formData.append('description', data.description)
     formData.append('price_per_kg', data.price_per_kg.toString())
     formData.append('stock_kg', data.stock_kg.toString())
-    if (data.shipping_cost !== undefined) formData.append('shipping_cost', data.shipping_cost.toString())
+    if (data.shipping_cost_1kg !== undefined) formData.append('shipping_cost_1kg', data.shipping_cost_1kg.toString())
+    if (data.shipping_cost_2kg !== undefined) formData.append('shipping_cost_2kg', data.shipping_cost_2kg.toString())
+    if (data.shipping_cost_5kg !== undefined) formData.append('shipping_cost_5kg', data.shipping_cost_5kg.toString())
+    if (data.shipping_cost_10kg !== undefined) formData.append('shipping_cost_10kg', data.shipping_cost_10kg.toString())
     formData.append('is_active', (data.is_active ?? true).toString())
     if (data.image) {
       formData.append('image', data.image)
@@ -51,7 +57,10 @@ export const adminApi = {
     if (data.description !== undefined) formData.append('description', data.description || '')
     if (data.price_per_kg !== undefined) formData.append('price_per_kg', data.price_per_kg.toString())
     if (data.stock_kg !== undefined) formData.append('stock_kg', data.stock_kg.toString())
-    if (data.shipping_cost !== undefined) formData.append('shipping_cost', data.shipping_cost.toString())
+    if (data.shipping_cost_1kg !== undefined) formData.append('shipping_cost_1kg', data.shipping_cost_1kg.toString())
+    if (data.shipping_cost_2kg !== undefined) formData.append('shipping_cost_2kg', data.shipping_cost_2kg.toString())
+    if (data.shipping_cost_5kg !== undefined) formData.append('shipping_cost_5kg', data.shipping_cost_5kg.toString())
+    if (data.shipping_cost_10kg !== undefined) formData.append('shipping_cost_10kg', data.shipping_cost_10kg.toString())
     if (data.is_active !== undefined) formData.append('is_active', data.is_active.toString())
     if (data.image) {
       formData.append('image', data.image)
